@@ -1,6 +1,5 @@
 import asyncio
 import io
-import json
 
 from PIL import Image
 import aiohttp
