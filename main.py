@@ -11,8 +11,8 @@ import google.generativeai as genai
 from google.generativeai.types import StopCandidateException, BlockedPromptException
 
 
-async def split_into_chunks(response):
-    chunks = [response.text[i:i + 2000] for i in range(0, len(response.text), 2000)]
+async def split_into_chunks(text):
+    chunks = [text[i:i + 2000] for i in range(0, len(text), 2000)]
     return chunks
 
 
@@ -33,6 +33,9 @@ async def get_images(message):
             # filedata: bytes = await self.download_attachment(attachment, session)
             # result.append(Image.open(io.BytesIO(filedata)))
     return result
+
+
+# TODO: vision chat history integrated into the regular chat history
 
 
 class Bot(commands.Bot):
@@ -58,7 +61,7 @@ class Bot(commands.Bot):
             await interaction.response.defer(thinking=True)
             response = await self.model.generate_content_async(message)
             try:
-                chunks = await split_into_chunks(response)
+                chunks = await split_into_chunks(response.text)
                 for chunk in chunks:
                     await interaction.followup.send(chunk)
             except ValueError as e:
@@ -96,7 +99,7 @@ class Bot(commands.Bot):
         async with message.channel.typing():
             try:
                 response = await self.vision.generate_content_async([stripped_message, *images])
-                chunks = await split_into_chunks(response)
+                chunks = await split_into_chunks(response.text)
                 for chunk in chunks:
                     await message.channel.send(chunk, reference=message)
             except (ValueError, StopCandidateException, BlockedPromptException) as e:
@@ -119,7 +122,7 @@ class Bot(commands.Bot):
                         response = await self.chat.send_message_async(f'Reference: "{reference}"\n{stripped_message}')
                     else:
                         response = await self.chat.send_message_async(stripped_message)
-                    chunks = await split_into_chunks(response)
+                    chunks = await split_into_chunks(response.text)
                     for chunk in chunks:
                         await message.channel.send(chunk, reference=message)
                 except (ValueError, StopCandidateException, BlockedPromptException) as e:
