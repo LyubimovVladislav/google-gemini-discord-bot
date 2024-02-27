@@ -1,5 +1,6 @@
 import asyncio
 import io
+import json
 
 from PIL import Image
 import aiohttp
@@ -99,11 +100,18 @@ class Bot(commands.Bot):
         async with message.channel.typing():
             try:
                 response = await self.vision.generate_content_async([stripped_message, *images])
-                chunks = await split_into_chunks(response.text)
+            except (ValueError, StopCandidateException, BlockedPromptException) as e:
+                await message.channel.send(e, reference=message)
+                return
+            try:
+                text = ''
+                for part in response.parts:
+                    text += part.text + '\n'
+                chunks = await split_into_chunks(text)
                 for chunk in chunks:
                     await message.channel.send(chunk, reference=message)
             except (ValueError, StopCandidateException, BlockedPromptException) as e:
-                await message.channel.send(e, reference=message)
+                await message.channel.send(response.prompt_feedback, reference=message)
 
     @staticmethod
     async def download_attachment(attachment: discord.Attachment, session: aiohttp.ClientSession) -> bytes:
