@@ -240,5 +240,3 @@ cython_debug/
 #.idea/
 
 # Custom gitignore
-
-config.ini
