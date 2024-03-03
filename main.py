@@ -66,8 +66,9 @@ class Bot(commands.Bot):
         async def generate_no_history(interaction: discord.Message.interaction, message: str):
             await interaction.response.defer(thinking=True)
             response = await self.model.generate_content_async(message)
+            response = prevent_discord_mention_everyone(response.text)
             try:
-                chunks = await split_into_chunks(response.text)
+                chunks = await split_into_chunks(response)
                 for chunk in chunks:
                     await interaction.followup.send(chunk)
             except ValueError as e:
@@ -77,7 +78,7 @@ class Bot(commands.Bot):
         if message.author.bot or message.author == self.user:
             return
 
-        stripped_message = prevent_discord_mention_everyone(strip_message(message.content))
+        stripped_message = strip_message(message.content)
         if self.user not in message.mentions:
             return
 
@@ -112,6 +113,7 @@ class Bot(commands.Bot):
                 text = ''
                 for part in response.parts:
                     text += part.text + '\n'
+                text = prevent_discord_mention_everyone(text)
                 chunks = await split_into_chunks(text)
                 for chunk in chunks:
                     await message.channel.send(chunk, reference=message)
@@ -135,7 +137,8 @@ class Bot(commands.Bot):
                         response = await self.chat.send_message_async(f'Reference: "{reference}"\n{stripped_message}')
                     else:
                         response = await self.chat.send_message_async(stripped_message)
-                    chunks = await split_into_chunks(response.text)
+                    response = prevent_discord_mention_everyone(response.text)
+                    chunks = await split_into_chunks(response)
                     for chunk in chunks:
                         await message.channel.send(chunk, reference=message)
                 except (ValueError, StopCandidateException, BlockedPromptException) as e:
