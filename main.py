@@ -151,7 +151,7 @@ class Bot(commands.Bot):
 
 
 if __name__ == '__main__':
-    supported_formats = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
+    supported_formats = ('.jpg', '.jpeg', '.png', '.webp')
     semaphore = asyncio.BoundedSemaphore(1)
     API_KEY = ''
     ERR_MESSAGE = 'https://i.imgur.com/DJqE6wq.jpeg'
