@@ -168,7 +168,7 @@ def read_config(filename):
 
 if __name__ == '__main__':
     supported_formats = ('.jpg', '.jpeg', '.png', '.webp')
-    GOOGLE_API_KEY, GUILD_ID, BOT_API_KEY = read_config('example_config.ini')
+    GOOGLE_API_KEY, GUILD_ID, BOT_API_KEY = read_config('config.ini')
     semaphore = asyncio.BoundedSemaphore(1)
     ERR_MESSAGE = 'https://i.imgur.com/DJqE6wq.jpeg'
     genai.configure(api_key=GOOGLE_API_KEY)
