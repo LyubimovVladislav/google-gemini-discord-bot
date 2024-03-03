@@ -87,7 +87,7 @@ class Bot(commands.Bot):
             await self.process_message(message, stripped_message)
         elif message.reference and (self.user in message.mentions):
             referenced_message = (await message.channel.fetch_message(
-                message.reference.message_id)).content if message.reference.cached_message is None else message.reference.cached_message
+                message.reference.message_id)).content if message.reference.cached_message is None else message.reference.cached_message.content
             await self.process_message(message, stripped_message, reference=referenced_message)
 
     async def handle_attachment(self, message, stripped_message):
