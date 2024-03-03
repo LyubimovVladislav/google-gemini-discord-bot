@@ -1,5 +1,6 @@
 import asyncio
 import io
+import configparser
 
 from PIL import Image
 import aiohttp
@@ -150,16 +151,30 @@ class Bot(commands.Bot):
             activity=discord.Activity(type=discord.ActivityType.listening, name='0 messages in the chat history'))
 
 
+def read_config(filename):
+    config = configparser.ConfigParser()
+    config.read(filename)
+    config = config['DEFAULT']
+    google_api_key = config.get('GoogleGeminiApiKey', '')
+    guild_id = config.get('DiscordGuildId', '123')
+    try:
+        guild_id = int(guild_id)
+    except ValueError:
+        print('Guild id should be a number')
+        exit()
+    bot_api_key = config.get('DiscordBotApiKey', '')
+    return google_api_key, guild_id, bot_api_key
+
+
 if __name__ == '__main__':
     supported_formats = ('.jpg', '.jpeg', '.png', '.webp')
+    GOOGLE_API_KEY, GUILD_ID, BOT_API_KEY = read_config('config.ini')
     semaphore = asyncio.BoundedSemaphore(1)
-    API_KEY = ''
     ERR_MESSAGE = 'https://i.imgur.com/DJqE6wq.jpeg'
-    guild_id = 123
-    genai.configure(api_key=API_KEY)
+    genai.configure(api_key=GOOGLE_API_KEY)
     bot = Bot(
         intents=discord.Intents.all(),
         command_prefix='!',
-        guild_id=guild_id
+        guild_id=GUILD_ID
     )
-    bot.run('')
+    bot.run(BOT_API_KEY)
