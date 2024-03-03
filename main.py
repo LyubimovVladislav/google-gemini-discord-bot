@@ -65,7 +65,7 @@ class Bot(commands.Bot):
                 for chunk in chunks:
                     await interaction.followup.send(chunk)
             except ValueError as e:
-                await interaction.followup.send(response.prompt_feedback)
+                await interaction.followup.send(ERR_MESSAGE)
 
     async def on_message(self, message: Message, /) -> None:
         if message.author.bot or message.author == self.user:
@@ -110,7 +110,7 @@ class Bot(commands.Bot):
                 for chunk in chunks:
                     await message.channel.send(chunk, reference=message)
             except (ValueError, StopCandidateException, BlockedPromptException) as e:
-                await message.channel.send(response.prompt_feedback, reference=message)
+                await message.channel.send(ERR_MESSAGE, reference=message)
 
     @staticmethod
     async def download_attachment(attachment: discord.Attachment, session: aiohttp.ClientSession) -> bytes:
@@ -133,7 +133,7 @@ class Bot(commands.Bot):
                     for chunk in chunks:
                         await message.channel.send(chunk, reference=message)
                 except (ValueError, StopCandidateException, BlockedPromptException) as e:
-                    await message.channel.send(e, reference=message)
+                    await message.channel.send(ERR_MESSAGE, reference=message)
                 finally:
                     await self.change_presence(
                         activity=discord.Activity(type=discord.ActivityType.listening,
@@ -154,6 +154,7 @@ if __name__ == '__main__':
     supported_formats = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
     semaphore = asyncio.BoundedSemaphore(1)
     API_KEY = ''
+    ERR_MESSAGE = 'https://i.imgur.com/DJqE6wq.jpeg'
     guild_id = 123
     genai.configure(api_key=API_KEY)
     bot = Bot(
