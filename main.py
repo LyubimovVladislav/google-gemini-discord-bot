@@ -37,7 +37,7 @@ async def get_images(message):
 
 
 def prevent_discord_mention_everyone(message):
-    message.replace('@everyone', '*everyone')
+    message = message.replace('@everyone', '*everyone')
     return message
 
 
