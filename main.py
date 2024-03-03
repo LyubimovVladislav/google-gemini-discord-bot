@@ -18,8 +18,8 @@ async def split_into_chunks(text):
 
 
 def strip_message(message):
-    message.content = message.content.strip()
-    stripped_message = message.content.replace('<@1053053778963738745>', '').strip()
+    message = message.strip()
+    stripped_message = message.replace('<@1053053778963738745>', '').strip()
     return stripped_message
 
 
@@ -37,7 +37,7 @@ async def get_images(message):
 
 
 def prevent_discord_mention_everyone(message):
-    message.content.replace('@everyone', '*everyone')
+    message.replace('@everyone', '*everyone')
     return message
 
 
@@ -77,7 +77,7 @@ class Bot(commands.Bot):
         if message.author.bot or message.author == self.user:
             return
 
-        stripped_message = prevent_discord_mention_everyone(strip_message(message))
+        stripped_message = prevent_discord_mention_everyone(strip_message(message.content))
         if self.user not in message.mentions:
             return
 
