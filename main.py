@@ -100,7 +100,7 @@ class Bot(commands.Bot):
             try:
                 response = await self.vision.generate_content_async([stripped_message, *images])
             except (ValueError, StopCandidateException, BlockedPromptException) as e:
-                await message.channel.send(e, reference=message)
+                await message.channel.send(ERR_MESSAGE, reference=message)
                 return
             try:
                 text = ''
