@@ -194,6 +194,7 @@ if __name__ == '__main__':
     bot = Bot(
         intents=discord.Intents.all(),
         command_prefix='!',
-        guild_id=GUILD_ID
+        guild_id=GUILD_ID,
+        safety_settings=safety
     )
     bot.run(BOT_API_KEY)
