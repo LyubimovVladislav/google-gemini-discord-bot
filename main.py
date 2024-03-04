@@ -179,17 +179,28 @@ if __name__ == '__main__':
     GOOGLE_API_KEY, GUILD_ID, BOT_API_KEY = read_config('config.ini')
     semaphore = asyncio.BoundedSemaphore(1)
     ERR_MESSAGE = 'https://i.imgur.com/DJqE6wq.jpeg'
-    safety = {safety_types.HarmCategory.HARM_CATEGORY_SEXUAL: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_MEDICAL: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_DANGEROUS: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_TOXICITY: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_VIOLENCE: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_DEROGATORY: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_HARASSMENT: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_UNSPECIFIED: safety_types.HarmBlockThreshold.BLOCK_NONE,
-              safety_types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: safety_types.HarmBlockThreshold.BLOCK_NONE}
+    safety = [{"category": safety_types.HarmCategory.HARM_CATEGORY_SEXUAL,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_MEDICAL,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_DANGEROUS,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_TOXICITY,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_VIOLENCE,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_DEROGATORY,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE,
+               "category": safety_types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+               "threshold": safety_types.HarmBlockThreshold.BLOCK_NONE}]
     genai.configure(api_key=GOOGLE_API_KEY)
     bot = Bot(
         intents=discord.Intents.all(),
