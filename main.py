@@ -9,7 +9,7 @@ from discord import app_commands, Message
 from discord.ext import commands
 
 import google.generativeai as genai
-from google.generativeai.types import StopCandidateException, BlockedPromptException
+from google.generativeai.types import StopCandidateException, BlockedPromptException, safety_types
 
 
 async def split_into_chunks(text):
@@ -45,10 +45,10 @@ def prevent_discord_mention_everyone(message):
 
 
 class Bot(commands.Bot):
-    def __init__(self, /, command_prefix, intents, guild_id):
+    def __init__(self, /, command_prefix, intents, guild_id, safety_settings):
         super().__init__(command_prefix, intents=intents)
         self.guild = discord.Object(id=guild_id)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-pro', safety_settings=safety_settings)
         self.vision = genai.GenerativeModel('gemini-pro-vision')
         self.chat = self.model.start_chat()
         self.register_app_commands()
@@ -179,6 +179,17 @@ if __name__ == '__main__':
     GOOGLE_API_KEY, GUILD_ID, BOT_API_KEY = read_config('config.ini')
     semaphore = asyncio.BoundedSemaphore(1)
     ERR_MESSAGE = 'https://i.imgur.com/DJqE6wq.jpeg'
+    safety = {safety_types.HarmCategory.HARM_CATEGORY_SEXUAL: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_MEDICAL: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_DANGEROUS: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_TOXICITY: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_VIOLENCE: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_DEROGATORY: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_HARASSMENT: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_UNSPECIFIED: safety_types.HarmBlockThreshold.BLOCK_NONE,
+              safety_types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: safety_types.HarmBlockThreshold.BLOCK_NONE}
     genai.configure(api_key=GOOGLE_API_KEY)
     bot = Bot(
         intents=discord.Intents.all(),
