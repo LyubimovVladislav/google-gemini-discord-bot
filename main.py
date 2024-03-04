@@ -73,6 +73,7 @@ class Bot(commands.Bot):
                     await interaction.followup.send(chunk)
             except ValueError as e:
                 await interaction.followup.send(ERR_MESSAGE)
+                print(response.prompt_feedback)
 
     async def on_message(self, message: Message, /) -> None:
         if message.author.bot or message.author == self.user:
@@ -108,6 +109,7 @@ class Bot(commands.Bot):
                 response = await self.vision.generate_content_async([stripped_message, *images])
             except (ValueError, StopCandidateException, BlockedPromptException) as e:
                 await message.channel.send(ERR_MESSAGE, reference=message)
+                print(e)
                 return
             try:
                 text = ''
@@ -118,6 +120,7 @@ class Bot(commands.Bot):
                 for chunk in chunks:
                     await message.channel.send(chunk, reference=message)
             except (ValueError, StopCandidateException, BlockedPromptException) as e:
+                print(response.prompt_feedback)
                 await message.channel.send(ERR_MESSAGE, reference=message)
 
     @staticmethod
@@ -143,6 +146,7 @@ class Bot(commands.Bot):
                         await message.channel.send(chunk, reference=message)
                 except (ValueError, StopCandidateException, BlockedPromptException) as e:
                     await message.channel.send(ERR_MESSAGE, reference=message)
+                    print(e)
                 finally:
                     await self.change_presence(
                         activity=discord.Activity(type=discord.ActivityType.listening,
